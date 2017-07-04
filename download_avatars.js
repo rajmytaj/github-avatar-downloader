@@ -1,9 +1,12 @@
+var args = process.argv.slice(2);
+
+
 var request = require('request');
 
 console.log('welcome to the github avatar downloader');
 
-var GITHUB_USER = "";
-var GITHUB_TOKEN = "";
+var GITHUB_USER = args[0];
+var GITHUB_TOKEN = args[1];
 
 function getRepoContributors(repoOwner, repoName, cb) {
   var requestURL = 'https://'+ GITHUB_USER + ':' + GITHUB_TOKEN + '@api.github.com/repos/' + repoOwner + '/' + repoName + '/contributors';
@@ -34,7 +37,7 @@ function getRepoContributors(repoOwner, repoName, cb) {
 
 
 
-getRepoContributors("jquery", "jquery", function(err, result) {
+getRepoContributors('jquery', 'jquery', function(err, result) {
   
   result.forEach(function(item){
     //console.log(item);
@@ -52,7 +55,7 @@ function downloadImageByURL(url, filePath) {
            console.log(err); 
          })
          .on('response', function (response) {                          
-           console.log('Response Status Code: ', response.statusCode);
+           console.log('download successful');
          })
          .pipe(fs.createWriteStream(filePath));               
 
