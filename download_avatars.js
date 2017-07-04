@@ -36,9 +36,11 @@ function getRepoContributors(repoOwner, repoName, cb) {
 } 
 
 
-
+if (GITHUB_USER === undefined || GITHUB_TOKEN === undefined){
+  console.log('please enter your github username followed by your github token separated by a space.')
+}
 getRepoContributors('jquery', 'jquery', function(err, result) {
-  
+
   result.forEach(function(item){
     //console.log(item);
     downloadImageByURL(item.avatar_url,"./avatars/"+item.id+".jpg");
