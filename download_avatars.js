@@ -7,9 +7,23 @@ console.log('welcome to the github avatar downloader');
 
 var GITHUB_USER = args[0];
 var GITHUB_TOKEN = args[1];
+var fs = require('fs');
+function downloadImageByURL(url, filePath) {
+
+
+  request.get(url)
+    .on('error', function (err) {
+      console.log(err);
+    })
+    .on('response', function (response) {
+      console.log('download successful');
+    })
+    .pipe(fs.createWriteStream(filePath));
+
+}
 
 function getRepoContributors(repoOwner, repoName, cb) {
-  var requestURL = 'https://'+ GITHUB_USER + ':' + GITHUB_TOKEN + '@api.github.com/repos/' + repoOwner + '/' + repoName + '/contributors';
+  var requestURL = 'https://' + GITHUB_USER + ':' + GITHUB_TOKEN + '@api.github.com/repos/' + repoOwner + '/' + repoName + '/contributors';
   
   var options = {
     url: requestURL,
@@ -26,43 +40,29 @@ function getRepoContributors(repoOwner, repoName, cb) {
       // }
       
       //console.log(JSON.parse(response.body));
-      cb(error, JSON.parse(response.body)); 
+      cb(error, JSON.parse(response.body));
     } catch (err) {
       console.log(err);
       console.log('Failed to parse content body');
     }
   });
 
-} 
+}
 
 
 if (GITHUB_USER === undefined || GITHUB_TOKEN === undefined){
-  console.log('please enter your github username followed by your github token separated by a space.')
+  console.log('please enter your github username followed by your github token separated by a space.');
 }
 getRepoContributors('jquery', 'jquery', function(err, result) {
 
   result.forEach(function(item){
     //console.log(item);
-    downloadImageByURL(item.avatar_url,"./avatars/"+item.id+".jpg");
+    downloadImageByURL(item.avatar_url, "./avatars/" + item.id + ".jpg");
   });
 
   
 });
 
-function downloadImageByURL(url, filePath) {
-  var fs = require('fs');
 
-  request.get(url)               
-         .on('error', function (err) {                                   
-           console.log(err); 
-         })
-         .on('response', function (response) {                          
-           console.log('download successful');
-         })
-         .pipe(fs.createWriteStream(filePath));               
-
-}
-
-  
   
 
