@@ -9,27 +9,55 @@ function getRepoContributors(repoOwner, repoName, cb) {
   var requestURL = 'https://'+ GITHUB_USER + ':' + GITHUB_TOKEN + '@api.github.com/repos/' + repoOwner + '/' + repoName + '/contributors';
   
   var options = {
-  url: requestURL,
-  headers: {
-    'User-Agent': 'blah blah'
-  }
-};
+    url: requestURL,
+    headers: {
+      'User-Agent': 'blah blah'
+    }
+  };
 
-  request(options, function (error, response, body){
+  request(options, function (error, response){
     try {
-      const data = JSON.parse(body);
-      for (const prop in data){
-        console.log(prop);
-      }
+      // data = JSON.parse(body);
+      // for (const prop in data){
+      //   console.log(prop);
+      // }
+      
+      //console.log(JSON.parse(response.body));
+      cb(error, JSON.parse(response.body)); 
     } catch (err) {
+      console.log(err);
       console.log('Failed to parse content body');
     }
-  })
-}
+  });
+
+} 
+
 
 
 getRepoContributors("jquery", "jquery", function(err, result) {
-  console.log("Errors:", err);
-  console.log("Result:", result);
+  
+  result.forEach(function(item){
+    //console.log(item);
+    downloadImageByURL(item.avatar_url,"./avatars/"+item.id+".jpg");
+  });
+
+  
 });
-// console.log(requestURL);
+
+function downloadImageByURL(url, filePath) {
+  var fs = require('fs');
+
+  request.get(url)               
+         .on('error', function (err) {                                   
+           console.log(err); 
+         })
+         .on('response', function (response) {                          
+           console.log('Response Status Code: ', response.statusCode);
+         })
+         .pipe(fs.createWriteStream(filePath));               
+
+}
+
+  
+  
+
